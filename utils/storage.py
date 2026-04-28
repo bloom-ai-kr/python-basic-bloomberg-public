@@ -24,9 +24,12 @@ DEFAULT_SESSION_STATE = {
     "order_ticket_price": 70000,
     "order_ticket_market_price": 70100,
     "order_ticket_market_as_of": "예시 시각",
+    "balance_snapshot": {},
     "portfolio_items": [],
     "order_items": [],
     "open_order_items": [],
+    "account_last_synced_at": "",
+    "account_sync_error": "",
 }
 
 
@@ -40,3 +43,12 @@ def init_session_state() -> None:
     for key, value in DEFAULT_SESSION_STATE.items():
         if key not in st.session_state:
             st.session_state[key] = _clone_default(value)
+
+
+def apply_account_snapshot(snapshot: dict[str, Any]) -> None:
+    st.session_state.balance_snapshot = _clone_default(snapshot.get("balance_snapshot") or {})
+    st.session_state.portfolio_items = _clone_default(snapshot.get("portfolio_items") or [])
+    st.session_state.order_items = _clone_default(snapshot.get("order_items") or [])
+    st.session_state.open_order_items = _clone_default(snapshot.get("open_order_items") or [])
+    st.session_state.account_last_synced_at = str(snapshot.get("synced_at") or "")
+    st.session_state.account_sync_error = ""
